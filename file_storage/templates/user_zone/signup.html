@@ -1,0 +1,34 @@
+{% extends 'user_zone/layout.html' %}
+
+{% block content %}
+<div id="loginspace">
+    <form method="post" action="" name="register">
+        {{ form.hidden_tag() }}
+        <div id="loginbox1">
+            <p>
+                Login : <br>
+                Password : <br>
+                Confirm Password : <br>
+                Email : <br>
+            </p>
+        </div>
+        <div id="loginbox2">
+            <p>
+            {{ form.username(size=30) }}<br>
+            {{ form.password(size=30) }}<br>
+            {{ form.confirm(size=30) }}<br>
+            {{ form.email(size=30) }} <br><br>
+                 <input type='submit' value="Zarejestruj" class="button">
+            </p>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </form>
+</div>
+
+{% endblock %}

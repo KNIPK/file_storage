@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>Projekt 1</title>
+    {% endif %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}" type="text/css">
+</head>
+<body>
+    <div id="rodzic">
+        <a href="/" class="button">Start</a>
+        <a href="/signup" class="button">Register</a>
+        <a href="/signin" class="button">Login</a>
+        <a href="/home" class="button">Home</a>
+        <a href="/help" class="button">Help</a>
+    </div>
+     <hr class="style1"><br>
+    {% block content %}
+    {% endblock %}
+    <br>
+    <div id="footer">
+        <hr class="style2">
+    </div>
+
+</body>
+</html>

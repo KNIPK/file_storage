@@ -1,0 +1,116 @@
+/*
+tlo - #2d2e29
+cream -  #ccc2a6
+*/
+
+
+body
+{
+height:800px;
+width:1250px;
+
+margin-left:auto;
+margin-right:auto;
+background-color:#2d2e29;
+}
+
+#loginspace {
+        float:left;
+        width:99%;
+        padding: 0px;
+        border: 8px #ccc2a6 double;
+        background-color: #ece1c1;
+        color:#505739;
+        }
+#loginbox1
+ {
+        padding-left:20px;
+        padding-top:5px;
+        float:left;
+        width:12%;
+
+      }
+#loginbox2
+{
+    float:left;
+    width:20%;
+  }
+
+
+#rodzic {
+    position:relative;
+    width:100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    top:0;
+    left:0;
+    }
+#footer {
+padding-top: 20px;
+    clear: both;
+}
+#startpage {
+    height:600px;
+    padding:20px;
+    border: 8px #ccc2a6 double;
+    background-color: #ece1c1;
+    color:#505739;
+}
+
+
+
+
+hr.style1 {
+    padding: 0;
+    border: none;
+    border-top: medium double #ccc2a6;
+    color: #ccc2a6;
+    text-align: center;
+}
+hr.style1:after {
+    display: inline-block;
+    position: relative;
+    top: -0.7em;
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: #2d2e29;
+}
+hr.style2 {
+    padding: 0;
+    border: none;
+    border-top: medium double #ccc2a6;
+    color: #ccc2a6;
+    text-align: center;
+}
+hr.style2:after {
+    content: "§";
+    display: inline-block;
+    position: relative;
+    top: -0.7em;
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: #2d2e29;
+}
+
+
+.button {
+	background: #ccc2a6;
+  background-image: -webkit-linear-gradient(top, #ccc2a6, #a69e88);
+  background-image: -moz-linear-gradient(top, #ccc2a6, #a69e88);
+  background-image: -ms-linear-gradient(top, #ccc2a6, #a69e88);
+  background-image: -o-linear-gradient(top, #ccc2a6, #a69e88);
+  background-image: linear-gradient(to bottom, #ccc2a6, #a69e88);
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 3px;
+  text-shadow: 1px 1px 3px #000000;
+  font-family: Times New Roman;
+  color: #e3dece;
+  font-size: 20px;
+  padding: 5px 10px 5px 10px;
+  border: solid #ccc2a6 2px;
+  text-decoration:none;
+}
+
+
+

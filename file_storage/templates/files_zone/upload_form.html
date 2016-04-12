@@ -1,0 +1,38 @@
+{% extends "bootstrap/base.html" %}
+
+{% block head %}
+<link href="{{ url_for('static', filename='scripts/bootstrap/dist/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='scripts/dropzone/dist/dropzone.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}Upload{% endblock %}
+
+
+
+{% block body %}
+
+    {% block navbar %}
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Upload</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="{{ url_for('hello_world') }}">Home</a></li>
+    </ul>
+  </div>
+</nav>
+{% endblock %}
+    <div class="container-fluid">
+
+<form action="{{ url_for('upload_file') }}"
+      class="dropzone"
+      id="my-awesome-dropzone"></form>
+</div>
+    {% block scripts %}
+<script type=text/javascript src="{{ url_for('static', filename='scripts/dropzone/dist/dropzone.js') }}"></script>
+{{super()}}
+{% endblock %}
+{% endblock %}
+
+

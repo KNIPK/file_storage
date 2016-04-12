@@ -1,0 +1,33 @@
+{% extends 'user_zone/layout.html' %}
+
+{% block content %}
+
+<div id="loginspace">
+	<form action="" method="POST" id=>
+		<div class="row" style="padding: 10px">
+			<label for="help-email" style="width: 150px; display: inline-block; text-align: right">Podaj adres email</label>
+			<input id="help-email" name="help-email" type="email" required>
+		</div>
+		<div class="row" style="padding: 10px">
+			<label for="help-subject" style="width: 150px; display: inline-block; text-align: right">Temat</label>
+			<input id="help-subject" name="help-subject" type="text" required>
+		</div>
+		<div class="row" style="padding: 10px;">
+			<label for="help-description" style="width: 150px; display: inline-block; text-align: right;">Opis problemu</label>
+			<textarea id="help-description" name = "help-description" maxlength="1000" rows="10" style="width: 50%; vertical-align: middle;"></textarea>
+			<div class="row">
+				<input type="submit" value="Wyślij">
+			</div>
+		</div>		
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for message in messages %}
+					<p>{{ message }}</p>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
+	</form>
+</div>
+
+
+{% endblock %}
