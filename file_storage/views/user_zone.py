@@ -1,5 +1,6 @@
-from flask import session, render_template, url_for, request, redirect, g, flash, abort
-from file_storage import app, db
+from flask import render_template, url_for, request, redirect, flash, abort
+from flask_login import logout_user,login_user,login_required
+from file_storage import app, db,lm
 from ..forms.user_zone import RegisterForm, LoginForm
 from ..models import User
 from ..util.utils import send_email
@@ -7,6 +8,10 @@ from ..util.security import ts
 from ..config import MAIL_DEFAULT_SENDER
 
 add = "user_zone/"
+
+@lm.user_loader
+def load_user(user_id):
+    return User.query.filter(User.id == int(user_id)).first()
 
 
 @app.route('/')
@@ -44,11 +49,10 @@ def signup():
 def signin():
     form = LoginForm()
     if request.method == 'POST':
-        session.pop('user', None)
         name = User.query.filter_by(username = str(request.form['username'])).first()
         try:
             if name.check_password(request.form['password']):
-                session['user'] = request.form['username']
+                login_user(name)
                 return redirect(url_for('home'))
         except:
             flash("Błędny login lub hasło")
@@ -57,25 +61,17 @@ def signin():
     return render_template(add + 'signin.html', form = form, title = 'Logowanie',
                            url_reset_password = url_reset_password)
 
-
-@app.before_request
-def before_request():
-    g.user = None
-    if 'user' in session:
-        g.user = session['user']
-
-
-@app.route('/dropsession')
-def dropsession():
-    session.pop('user', None)
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
     return redirect(url_for('index'))
 
 
 @app.route('/home')
+@login_required
 def home():
-    if g.user:
-        return render_template(add + 'home.html')
-    return redirect(url_for('signin'))
+    return render_template(add + 'home.html')
 
 
 @app.route('/help', methods = ['POST', 'GET'])
@@ -95,12 +91,12 @@ def help():
 def confirm_email(token):
     email = None
     try:
-        email = ts.loads(token, salt = "email-confirm-key", max_age = 86400)
+        email = ts.loads(token, salt = "email-confirm-key", max_age = 86400)# 24h
     except:
         abort(404)
 
     user = User.query.filter_by(email = email).first_or_404()
-    if user.is_active:
+    if user.email_confirmed:
         abort(404)
 
     user.activate_user()
