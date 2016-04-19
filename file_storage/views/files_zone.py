@@ -1,5 +1,6 @@
 from file_storage import app
 from flask import render_template, request, redirect, url_for,send_file
+from flask_login import login_required
 from werkzeug.utils import secure_filename
 import os
 import posixpath
@@ -21,6 +22,7 @@ def my_utility_processor():
 
 @app.route('/files/')
 @app.route('/files/<path:path>')
+@login_required
 def files_list(path = ""):
     upload_folder = UPLOAD_FOLDER
     cur_path = os.path.join(upload_folder, path)
@@ -30,6 +32,7 @@ def files_list(path = ""):
 
 
 @app.route('/download/<path:path>')
+@login_required
 def download(path):
     file_path = os.path.join('upload_storage',path)
     return send_file(file_path,as_attachment=True)
@@ -37,6 +40,7 @@ def download(path):
 
 
 @app.route('/upload', methods = ['GET', 'POST'])
+@login_required
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']

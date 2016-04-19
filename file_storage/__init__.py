@@ -2,9 +2,9 @@ from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+from flask_sqlalchemy import SQLAlchemy
 
 UPLOAD_FOLDER = 'c:/flask_uploads/'
-from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
