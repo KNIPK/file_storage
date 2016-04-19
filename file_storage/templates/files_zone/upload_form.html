@@ -1,17 +1,39 @@
-{% extends "user_zone/layout.html" %}
+{% extends "bootstrap/base.html" %}
 
-{% block content %}
-<div>
-<form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+{% block head %}
+<link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='dropzone/dropzone.css') }}" rel="stylesheet">
+    <script type=text/javascript src="{{ url_for('static', filename='dropzone/dropzone.js') }}"></script>
+{% endblock %}
 
-    <p><input type='file' name='file'>
-    <input type='submit' value='upload'>
-    </p>
+{% block title %}Upload{% endblock %}
 
 
-</form>
+
+{% block body %}
+
+    {% block navbar %}
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Upload</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="{{ url_for('hello_world') }}">Home</a></li>
+    </ul>
+  </div>
+</nav>
+{% endblock %}
+    <div class="container-fluid">
+
+<form action="{{ url_for('upload_file') }}"
+      class="dropzone"
+      id="my-awesome-dropzone"></form>
 </div>
+    {% block scripts %}
 
+{{super()}}
+{% endblock %}
 {% endblock %}
 
 
