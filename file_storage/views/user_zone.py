@@ -1,6 +1,6 @@
 from flask import render_template, url_for, request, redirect, flash, abort
-from flask_login import logout_user,login_user,login_required
-from file_storage import app, db,lm
+from flask_login import logout_user, login_user, login_required
+from file_storage import app, db, lm
 from ..forms.user_zone import RegisterForm, LoginForm
 from ..models import User
 from ..util.utils import send_email
@@ -8,6 +8,7 @@ from ..util.security import ts
 from ..config import MAIL_DEFAULT_SENDER
 
 add = "user_zone/"
+
 
 @lm.user_loader
 def load_user(user_id):
@@ -61,6 +62,7 @@ def signin():
     return render_template(add + 'signin.html', form = form, title = 'Logowanie',
                            url_reset_password = url_reset_password)
 
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -91,7 +93,7 @@ def help():
 def confirm_email(token):
     email = None
     try:
-        email = ts.loads(token, salt = "email-confirm-key", max_age = 86400)# 24h
+        email = ts.loads(token, salt = "email-confirm-key", max_age = 86400)  # 24h
     except:
         abort(404)
 
