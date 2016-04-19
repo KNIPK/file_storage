@@ -16,3 +16,5 @@ MAIL_USE_SSL = True
 MAIL_USERNAME = 'knitestmail@gmail.com'
 MAIL_PASSWORD = 'filemanager'
 MAIL_DEFAULT_SENDER = 'knitestmail@gmail.com'
+
+UPLOAD_FOLDER = 'file_storage/upload_storage'
