@@ -1,1 +1,8 @@
 Flask==0.10.1
+Flask_bootstrap==3.3.5.7
+SQLalchemy==1.0.12
+Flask-SQLAlchemy==1.0
+Flask-wtf==0.9.5
+Flask-Bcrypt==0.7.1
+Flask-login==0.3.2
+Flask-mail==0.9.1
