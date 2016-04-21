@@ -1,8 +1,11 @@
-Flask==0.10.1
-Flask_bootstrap==3.3.5.7
-SQLalchemy==1.0.12
-Flask-SQLAlchemy==1.0
-Flask-wtf==0.9.5
-Flask-Bcrypt==0.7.1
-Flask-login==0.3.2
-Flask-mail==0.9.1
+Flask == 0.10.1
+Flask_Bcrypt == 0.7.1
+Flask_Bootstrap == 3.3.5.7
+Flask_Login == 0.3.2
+Flask_Mail == 0.9.1
+Flask_SQLAlchemy == 2.1
+Flask_WTF == 0.12
+itsdangerous == 0.24
+Werkzeug == 0.11.8
+WTForms == 2.1
+sqlalchemy_migrate == 0.10.0
