@@ -1,5 +1,5 @@
 from flask import render_template, url_for, request, redirect, flash, abort
-from flask_login import logout_user,login_user,login_required
+from flask_login import logout_user,login_user,login_required,current_user
 from file_storage import app, db,lm
 from ..forms.user_zone import RegisterForm, LoginForm
 from ..models import User
@@ -22,44 +22,50 @@ def index():
 
 @app.route('/signup', methods = ['POST', 'GET'])
 def signup():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        new_user = User(request.form['username'], request.form['password'], request.form['email'])
-        if User.query.filter_by(email = new_user.email).first():
-            flash("Taki email już istnieje")
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    else:
+        form = RegisterForm()
+        if form.validate_on_submit():
+            new_user = User(request.form['username'], request.form['password'], request.form['email'])
+            if User.query.filter_by(email = new_user.email).first():
+                flash("Taki email już istnieje")
+                return redirect(url_for('signup'))
+            if User.query.filter_by(username = new_user.username).first():
+                flash("Taka nazwa użytkownika już istnieje")
+                return redirect(url_for('signup'))
+
+            db.session.add(new_user)
+            db.session.commit()
+            token = ts.dumps(new_user.email, salt = 'email-confirm-key')
+
+            confirm_url = url_for('confirm_email', token = token, _external = True)
+            html = render_template(add + 'email_activate.html', confirm_url = confirm_url)
+            send_email(new_user.email, 'Potwierdź swoje konto', html)
+            flash("Konto zostało utworzone. Potwierdź je klikają w link aktywacyjny wysłany na podany adres email")
             return redirect(url_for('signup'))
-        if User.query.filter_by(username = new_user.username).first():
-            flash("Taka nazwa użytkownika już istnieje")
-            return redirect(url_for('signup'))
 
-        db.session.add(new_user)
-        db.session.commit()
-        token = ts.dumps(new_user.email, salt = 'email-confirm-key')
-
-        confirm_url = url_for('confirm_email', token = token, _external = True)
-        html = render_template(add + 'email_activate.html', confirm_url = confirm_url)
-        send_email(new_user.email, 'Potwierdź swoje konto', html)
-        flash("Konto zostało utworzone. Potwierdź je klikają w link aktywacyjny wysłany na podany adres email")
-        return redirect(url_for('signup'))
-
-    return render_template(add + 'signup.html', form = form, title = 'Rejestracja')
+        return render_template(add + 'signup.html', form = form, title = 'Rejestracja')
 
 
 @app.route('/signin', methods = ['GET', 'POST'])
 def signin():
-    form = LoginForm()
-    if request.method == 'POST':
-        name = User.query.filter_by(username = str(request.form['username'])).first()
-        try:
-            if name.check_password(request.form['password']):
-                login_user(name)
-                return redirect(url_for('home'))
-        except:
-            flash("Błędny login lub hasło")
-            return redirect(url_for('signin'))
-    url_reset_password = url_for('reset_password')
-    return render_template(add + 'signin.html', form = form, title = 'Logowanie',
-                           url_reset_password = url_reset_password)
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    else:
+        form = LoginForm()
+        if request.method == 'POST':
+            name = User.query.filter_by(username = str(request.form['username'])).first()
+            try:
+                if name.check_password(request.form['password']):
+                    login_user(name)
+                    return redirect(url_for('home'))
+            except:
+                flash("Błędny login lub hasło")
+                return redirect(url_for('signin'))
+        url_reset_password = url_for('reset_password')
+        return render_template(add + 'signin.html', form = form, title = 'Logowanie',
+                               url_reset_password = url_reset_password)
 
 @app.route('/logout')
 @login_required
