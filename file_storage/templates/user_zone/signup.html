@@ -14,12 +14,20 @@
         </div>
         <div id="loginbox2">
             <p>
-            {{ form.username(size=30) }}<br>
-            {{ form.password(size=30) }}<br>
-            {{ form.confirm(size=30) }}<br>
-            {{ form.email(size=30) }} <br><br>
+            {{ form.username }}<br>
+            {{ form.password }}<br>
+            {{ form.confirm }}<br>
+            {{ form.email }} <br><br>
                  <input type='submit' value="Zarejestruj" class="button">
             </p>
+            {% with messages = form.username.errors + form.password.errors %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     {% for message in messages %}

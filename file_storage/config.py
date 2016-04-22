@@ -1,13 +1,15 @@
 import os
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 WTF_CSRF_ENABLED = True
 SECRET_KEY = 'moithos key'
 
-
+SALT_CONFIRM_EMAIL = 'email-confirm-key'
+SALT_RESET_PASSWORD = 'reset-password'
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
-SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir+'/db', 'db_repository')
+SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir + '/db', 'db_repository')
 
 MAIL_SERVER = 'smtp.gmail.com'
 MAIL_DEBUG = True
