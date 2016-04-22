@@ -1,7 +1,7 @@
 from flask import render_template, url_for, request, redirect, flash, abort
 from flask_login import logout_user, login_user, login_required, current_user
 from file_storage import app, db, lm
-from ..forms.user_zone import RegisterForm, LoginForm, ChangeEmailForm, ChangePasswordForm
+from ..forms.user_zone import RegisterForm, LoginForm, ChangeEmailForm, ChangePasswordForm, ResetPasswordForm
 from ..models import User
 from ..util.utils import send_email
 from ..util.security import ts
@@ -55,7 +55,7 @@ def signin():
         return redirect(url_for('index'))
     else:
         form = LoginForm()
-        if request.method == 'POST':
+        if form.validate_on_submit():
             name = User.query.filter_by(username = str(request.form['username'])).first()
             try:
                 if name.check_password(request.form['password']):
@@ -87,47 +87,47 @@ def home():
 @login_required
 def account():
     pass_form, email_form = ChangePasswordForm(), ChangeEmailForm()
-    login = current_user.username
-    if request.method == 'POST':
-        user = current_user
-        if 'submit_pass' in request.form:
-            old_password = request.form['old_password']
-            password = request.form['password']
+    user = current_user
+    if 'submit_pass' in request.form and pass_form.validate_on_submit():
+        old_password = request.form['old_password']
+        password = request.form['password']
+        if not user.check_password(old_password):
+            flash("Twoje stare hasło się nie zgadza", "password")
+            return redirect(url_for('account'))
 
-            if not user.check_password(old_password):
-                flash("Twoje stare hasło się nie zgadza", "password")
-                return redirect(url_for('account'))
+        user.set_password(password)
 
-            user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
 
-            db.session.add(user)
-            db.session.commit()
-
-            flash("Hasło zostało poprawnie zmienione", "password")
-        elif 'submit_email' in request.form:
-            email = request.form['email']
-            password = request.form['password']
-
-            if User.query.filter_by(email = str(email)).first():
-                flash("Taki email już istnieje", "email")
-                return redirect(url_for('account'))
-            if not user.check_password(password):
-                flash("Podałeś złe hasło", "email")
-                return redirect(url_for('account'))
-            user.email = email
-            user.email_confirmed = 0
-
-            db.session.add(user)
-            db.session.commit()
-
-            token = ts.dumps(email, salt = SALT_CONFIRM_EMAIL)
-
-            confirm_url = url_for('confirm_email', token = token, _external = True)
-            html = render_template(add + 'email_new_email.html', confirm_url = confirm_url)
-            send_email(user.email, 'Potwierdź swój email', html)
-            flash("Email został zmieniony poprawnie. Link aktywacyjny został przesłany na twój nowy adres", "email")
+        flash("Hasło zostało poprawnie zmienione", "password")
         return redirect(url_for('account'))
-    return render_template(add + 'account.html', pass_form = pass_form, email_form = email_form, login = login)
+    elif 'submit_email' in request.form and email_form.validate_on_submit():
+        email = request.form['email']
+        password = request.form['password']
+
+        if User.query.filter_by(email = str(email)).first():
+            flash("Taki email już istnieje", "email")
+            return redirect(url_for('account'))
+        if not user.check_password(password):
+            flash("Podałeś złe hasło", "email")
+            return redirect(url_for('account'))
+        user.email = email
+        user.email_confirmed = 0
+
+        db.session.add(user)
+        db.session.commit()
+
+        token = ts.dumps(email, salt = SALT_CONFIRM_EMAIL)
+
+        confirm_url = url_for('confirm_email', token = token, _external = True)
+        html = render_template(add + 'email_new_email.html', confirm_url = confirm_url)
+        send_email(user.email, 'Potwierdź swój email', html)
+        flash("Email został zmieniony poprawnie. Link aktywacyjny został przesłany na twój nowy adres", "email")
+        return redirect(url_for('account'))
+
+    return render_template(add + 'account.html', pass_form = pass_form, email_form = email_form,
+                           login = current_user.username, email = current_user.email)
 
 
 @app.route('/help', methods = ['POST', 'GET'])
@@ -189,15 +189,15 @@ def reset_with_token(token):
     except:
         abort(404)
 
-    form = ChangePasswordForm()
+    form = ResetPasswordForm()
 
-    if request.method == 'POST':
+    if form.validate_on_submit():
         user = User.query.filter_by(email = email).first_or_404()
         user.set_password(request.form['password'])
 
         db.session.add(user)
         db.session.commit()
-
+        flash("Hasło zostało poprawnie zmienione")
         return redirect(url_for('signin'))
 
     return render_template(add + 'new_password.html', form = form)

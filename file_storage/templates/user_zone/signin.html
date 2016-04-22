@@ -18,6 +18,14 @@
                  <input type='submit' value="Zaloguj" class="button">
                 <a href="{{ url_reset_password }}">Zapomniałem hasła</a>
             </p>
+            {% with messages = form.username.errors + form.password.errors %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     {% for message in messages %}

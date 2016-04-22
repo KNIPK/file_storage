@@ -2,7 +2,7 @@
 
 {% block content %}
 <div id="startpage">
-<p>Obecnie jesteś zalogowany jako {{ login }}</p>
+<p>Obecnie jesteś zalogowany jako {{ login }}, email: {{ email }}</p>
     <div style="float: left;">
         <p>
             Stare hasło<br>
@@ -11,13 +11,20 @@
         </p>
     </div>
     <form method="POST" action="" name="changePassword" style="padding: 10px; float: left;">
+        {{ pass_form.hidden_tag() }}
         {{ pass_form.old_password }} <br>
         {{ pass_form.password }} <br>
         {{ pass_form.confirm }} <br>
         <input type="submit" name="submit_pass" value="Zmień hasło">
     </form>
     <div style="float: left; padding: 10px;">
-        {% with messages = get_flashed_messages(category_filter=["password"]) %}
+        {% with messages = pass_form.old_password.errors + pass_form.password.errors + pass_form.confirm.errors %}
+            {% if messages %}
+                {{ messages[0] }}
+            {% endif %}
+        {% endwith %}
+
+        {% with messages = get_flashed_messages(category_filter = ['password']) %}
             {% if messages %}
                 {% for message in messages %}
                     <p>{{ message }}</p>
@@ -33,12 +40,21 @@
         </p>
     </div>
     <form method="POST" action="" name="changeEmail" style="padding: 10px; float: left;">
+        {{ pass_form.hidden_tag() }}
         {{ email_form.email }} <br>
         {{ email_form.password }} <br>
         <input type="submit" name="submit_email" value="Zmień email">
     </form>
     <div style="float: left; padding: 10px;">
-        {% with messages = get_flashed_messages(category_filter=["email"]) %}
+        {% with messages = email_form.email.errors + email_form.password.errors %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% with messages = get_flashed_messages(category_filter = ['email']) %}
             {% if messages %}
                 {% for message in messages %}
                     <p>{{ message }}</p>
