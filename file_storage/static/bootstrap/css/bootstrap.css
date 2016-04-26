@@ -1604,6 +1604,7 @@ pre code {
   }
 }
 .container-fluid {
+
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
@@ -5247,6 +5248,7 @@ a.thumbnail.active {
 .list-group {
   padding-left: 0;
   margin-bottom: 20px;
+
 }
 .list-group-item {
   position: relative;

@@ -5,7 +5,8 @@ from ..forms.user_zone import RegisterForm, LoginForm, ChangeEmailForm, ChangePa
 from ..models import User
 from ..util.utils import send_email
 from ..util.security import ts
-from ..config import MAIL_DEFAULT_SENDER, SALT_CONFIRM_EMAIL, SALT_RESET_PASSWORD
+from ..config import MAIL_DEFAULT_SENDER, SALT_CONFIRM_EMAIL, SALT_RESET_PASSWORD,UPLOAD_FOLDER
+import os
 
 add = "user_zone/"
 
@@ -144,6 +145,7 @@ def help():
 
 
 @app.route('/confirm/<token>')
+@login_required
 def confirm_email(token):
     email = None
     try:
@@ -155,6 +157,8 @@ def confirm_email(token):
     if user.email_confirmed:
         abort(404)
 
+    dir_path = os.path.join(UPLOAD_FOLDER, current_user.username)
+    os.mkdir(dir_path)
     user.activate_user()
     db.session.add(user)
     db.session.commit()

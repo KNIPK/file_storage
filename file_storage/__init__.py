@@ -3,14 +3,17 @@ from flask_bootstrap import Bootstrap
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from .config import UPLOAD_FOLDER
+#from flask_autoindex import AutoIndex
 
-UPLOAD_FOLDER = 'c:/flask_uploads/'
+
+#UPLOAD_FOLDER = 'c:/flask_uploads/'
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 Bootstrap(app)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+#app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 bcrypt = Bcrypt(app)
 

@@ -20,3 +20,40 @@ MAIL_PASSWORD = 'filemanager'
 MAIL_DEFAULT_SENDER = 'knitestmail@gmail.com'
 
 UPLOAD_FOLDER = 'file_storage/upload_storage'
+
+
+EXT_DIC = {
+    'txt':'text',#txt
+    'jpg':'image',#images
+    'JPG':'image',
+    'png': 'image',
+    'jpeg': 'image',
+    'gif': 'image',
+    'bmp': 'image',
+    'pdf':'pdf',#pdf
+    'zip':'archive',#archives
+    'rar':'archive',
+    'iso':'archive',
+    'sda':'archive',
+    'doc':'word',#word
+    'docm':'word',
+    'docx':'word',
+    'dot':'word',
+    'dotm':'word',
+    'dotx':'word',
+    'avi':'video',#video
+    'flv': 'video',
+    'wmv': 'video',
+    'mov': 'video',
+    'mp4': 'video',
+    'mp3':'audio',#sound
+    'wav': 'audio',
+    'wma': 'audio',
+    'm4a': 'audio',
+    'cpp':'code',#code
+    'html': 'code',
+    'css': 'code',
+    'js': 'code',
+    'py': 'code',
+
+}

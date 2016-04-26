@@ -16,10 +16,10 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">Upload</a>
+      <a class="navbar-brand" href="{{ url_for('upload_file') }}">Upload</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="{{ url_for('hello_world') }}">Home</a></li>
+      <li class="active"><a href="/files/">My Files</a></li>
     </ul>
   </div>
 </nav>
@@ -34,6 +34,17 @@
 
 {{super()}}
 {% endblock %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class="list-group">
+    {% for message in messages %}
+    <li class="list-group-item list-group-item-danger">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
 {% endblock %}
 
 

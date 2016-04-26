@@ -1,0 +1,19 @@
+
+.file_name{
+color:#3D3C3A;
+font-weight: bold;
+}
+
+.dir_link
+{
+padding-left: 10px;
+}
+.file_link
+{
+
+padding: 10px;
+}
+.browse_files
+{
+width:40%;
+}
