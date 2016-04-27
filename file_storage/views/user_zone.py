@@ -5,7 +5,7 @@ from ..forms.user_zone import RegisterForm, LoginForm, ChangeEmailForm, ChangePa
 from ..models import User,Directory
 from ..util.utils import send_email
 from ..util.security import ts
-from ..config import MAIL_DEFAULT_SENDER, SALT_CONFIRM_EMAIL, SALT_RESET_PASSWORD,UPLOAD_FOLDER
+from ..config import MAIL_DEFAULT_SENDER, SALT_CONFIRM_EMAIL, SALT_RESET_PASSWORD, UPLOAD_FOLDER
 import os
 
 add = "user_zone/"
@@ -13,7 +13,7 @@ add = "user_zone/"
 
 @lm.user_loader
 def load_user(user_id):
-    return User.query.filter(User.id == int(user_id)).first()
+    return User.query.filter(id = user_id).first()
 
 
 @app.route('/')
@@ -54,21 +54,31 @@ def signup():
 def signin():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
+    elif "resend_activation_email" in request.form:
+        user = User.query.filter_by(username = request.form['username']).first()
+        token = ts.dumps(user.email, salt = SALT_CONFIRM_EMAIL)
+
+        confirm_url = url_for('confirm_email', token = token, _external = True)
+        html = render_template(add + 'email_new_email.html', confirm_url = confirm_url)
+        send_email(user.email, 'Potwierdź swój email', html)
+        flash("Email aktywacyjny został wysłany ponownie")
+        return redirect(url_for('signin'))
     else:
         form = LoginForm()
+        url_reset_password = url_for('reset_password')
         if form.validate_on_submit():
             name = User.query.filter_by(username = str(request.form['username'])).first()
-            try:
-                if name.check_password(request.form['password']):
-                    login_user(name)
-                    return redirect(url_for('home'))
-                else:
-                    flash("Błędny login lub hasło")
-            except:
+            if name.check_password(request.form['password']):
+                if not name.email_confirmed:
+                    flash("Konto nie zostało aktywowane")
+                    return render_template(add + 'signin.html', form = form, url_reset_password = url_reset_password,
+                                           esend_activation_email = True)
+                login_user(name)
+                return redirect(url_for('home'))
+            else:
                 flash("Błędny login lub hasło")
-        url_reset_password = url_for('reset_password')
-        return render_template(add + 'signin.html', form = form, title = 'Logowanie',
-                               url_reset_password = url_reset_password)
+        return render_template(add + 'signin.html', form = form, url_reset_password = url_reset_password,
+                               resend_activation_email = False)
 
 
 @app.route('/logout')

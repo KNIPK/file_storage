@@ -33,6 +33,12 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
+
+            {% if resend_activation_email %}
+                <form method="post" action="" name="resend_activation_email">
+                    <input type="submit" value="Wyślij jeszcze raz email aktywacyjny" name="resend_activation_email">
+                </form>
+            {% endif %}
         </div>
     </form>
 </div>
