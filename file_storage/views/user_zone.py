@@ -2,7 +2,7 @@ from flask import render_template, url_for, request, redirect, flash, abort
 from flask_login import logout_user, login_user, login_required, current_user
 from file_storage import app, db, lm
 from ..forms.user_zone import RegisterForm, LoginForm, ChangeEmailForm, ChangePasswordForm, ResetPasswordForm
-from ..models import User
+from ..models import User,Directory
 from ..util.utils import send_email
 from ..util.security import ts
 from ..config import MAIL_DEFAULT_SENDER, SALT_CONFIRM_EMAIL, SALT_RESET_PASSWORD,UPLOAD_FOLDER
@@ -81,7 +81,7 @@ def logout():
 @app.route('/home')
 @login_required
 def home():
-    return render_template(add + 'home.html')
+    return render_template(add + 'home.html',username=current_user.username)
 
 
 @app.route('/account', methods = ['GET', 'POST'])
@@ -145,7 +145,6 @@ def help():
 
 
 @app.route('/confirm/<token>')
-@login_required
 def confirm_email(token):
     email = None
     try:
@@ -157,8 +156,16 @@ def confirm_email(token):
     if user.email_confirmed:
         abort(404)
 
-    dir_path = os.path.join(UPLOAD_FOLDER, current_user.username)
-    os.mkdir(dir_path)
+    try:
+        user_dir = Directory(user.username,user.id,None)
+        user_dir.Hide()
+        db.session.add(user_dir)
+        db.session.commit()
+        dir_path = os.path.join(UPLOAD_FOLDER,user.username)
+        os.mkdir(dir_path)
+    except:
+        abort(404)
+
     user.activate_user()
     db.session.add(user)
     db.session.commit()

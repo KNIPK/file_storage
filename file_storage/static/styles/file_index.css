@@ -3,10 +3,18 @@
 color:#3D3C3A;
 font-weight: bold;
 }
+.dir_name{
+color:#3D3C3A;
+font-weight: bold;
+}
 
 .dir_link
 {
 padding-left: 10px;
+}
+.dir_link:hover
+{
+text-decoration:none;
 }
 .file_link
 {

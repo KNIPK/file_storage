@@ -46,14 +46,27 @@ class Directory(db.Model):
     access = db.Column(db.Boolean, default=True)
     password = db.Column(db.String(64), index=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    holder_id = db.Column(db.Integer,index=True)
+    hidden = db.Column(db.Boolean,default = False)
     files = db.relationship("File",backref='holder',lazy='dynamic')
 
-    def __init__(self,name,owner_id):
+    def __init__(self,name,owner_id,holder_id):
         self.name = name
         self.access = True
+        self.holder_id = holder_id
         self.owner_id = owner_id
         self.white_list = []
         self.password = None
+        self.hidden = False
+
+
+    def __str__(self):
+        return "|Directory: " +self.name +" |Owner ID: " +str(self.owner_id) + " |Access: " + str(self.access)
+
+    def Hide(self):
+        self.hidden = True
+    def UnHide(self):
+        self.hidden = False
 
     def deny(self, password):
         self.access = False
@@ -78,6 +91,7 @@ class File(db.Model):
     ext = db.Column(db.String(10),unique=False,index=True)
     access = db.Column(db.Boolean, default=True)
     password = db.Column(db.String(64),index = True)
+    hidden = db.Column(db.Boolean, default=False)
     directory_id = db.Column(db.Integer,db.ForeignKey('directory.id'))
 
     def __init__(self,filename,directory_id):
@@ -87,6 +101,14 @@ class File(db.Model):
         self.directory_id=directory_id
         self.white_list = []
         self.password = None
+        self.hidden = False
+
+
+    def Hide(self):
+        self.hidden = True
+
+    def UnHide(self):
+        self.hidden = False
 
     def deny(self,password):
         self.access = False

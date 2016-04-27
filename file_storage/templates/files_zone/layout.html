@@ -1,0 +1,38 @@
+{% extends "bootstrap/base.html" %}
+
+
+{% block head %}
+<link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='styles/file_index.css') }}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+<link href="{{ url_for('static', filename='dropzone/dropzone.css') }}" rel="stylesheet">
+<script type=text/javascript src="{{ url_for('static', filename='dropzone/dropzone.js') }}"></script>
+
+{% endblock %}
+
+{% block title %}Files{% endblock %}
+
+{% block body %}
+
+    {% block navbar %}
+
+<nav class="navbar navbar-inverse" style="border-radius: 0px;">
+  <div class="container-fluid">
+    <div class="navbar-header">
+
+    </div>
+    <ul class="nav navbar-nav">
+     {% with username = give_current_username() %}
+      <li class="active"><a href="/files/{{ username }}">My Files</a></li>
+        {% endwith %}
+    </ul>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+
+
+{% endblock %}
