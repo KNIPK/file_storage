@@ -112,19 +112,40 @@ def makedir(directory):
 
 @app.route('/deletedirectory/<directory>')
 @login_required
-def delete_item(directory):
+def delete_directory(directory):
     owner = User.query.filter_by(username=str(current_user.username)).first_or_404()
     dir_to_delete = owner.directories.filter_by(name=directory).first_or_404()
     back_ref = None
     if dir_to_delete.holder_id:
         back_ref = owner.directories.filter_by(id=dir_to_delete.holder_id).first().name
     dir_path = route_dir_tree(directory)
-    shutil.rmtree(dir_path)
-    db.session.delete(dir_to_delete)
-    for dir in route_back_ref_tree():
-        db.session.delete(dir)
-    db.session.commit()
+    try:
+        shutil.rmtree(dir_path)
+        db.session.delete(dir_to_delete)
+        for dir in route_back_ref_tree():
+            db.session.delete(dir)
+        db.session.commit()
+    except:
+        flash("Wystapil nieznany blad, Nie mozna bylo usunac pliku")
+        return  redirect(url_for('my_files',directory=dir_to_delete.name))
     return redirect(url_for('my_files',directory=back_ref))
+
+
+@app.route('/deletefile/<directory>/<file>')
+@login_required
+def delete_item(directory,file):
+    owner = User.query.filter_by(username=str(current_user.username)).first_or_404()
+    dir_path = owner.directories.filter_by(name=directory).first_or_404()
+    file_to_delete = dir_path.files.filter_by(name=file).first()
+    file_path = os.path.join(route_dir_tree(directory),file_to_delete.name)
+
+    try:
+        os.remove(file_path)
+        db.session.delete(file_to_delete)
+        db.session.commit()
+    except:
+        flash("Wystapil nieznany blad, Nie mozna bylo usunac pliku")
+    return redirect(url_for('my_files',directory=dir_path.name))
 
 
 
