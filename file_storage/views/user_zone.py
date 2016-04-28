@@ -90,7 +90,7 @@ def logout():
 @app.route('/home')
 @login_required
 def home():
-    return render_template(add + 'home.html')
+    return render_template(add + 'home.html',username=current_user.username)
 
 
 @app.route('/account', methods = ['GET', 'POST'])
