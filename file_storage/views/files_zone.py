@@ -31,9 +31,8 @@ def my_utility_processor():
         return 'fa fa-file-o fa-lg'
     return dict(check_ext=check_ext)
 
-
-@app.context_processor
 @login_required
+@app.context_processor
 def my_utility_processor():
     def give_current_username():
         return current_user.username
