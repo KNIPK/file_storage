@@ -13,7 +13,7 @@ add = "user_zone/"
 
 @lm.user_loader
 def load_user(user_id):
-    return User.query.filter(id = user_id).first()
+    return User.query.filter(User.id == int(user_id)).first()
 
 
 @app.route('/')
@@ -24,10 +24,10 @@ def index():
 
 @app.route('/signup', methods = ['POST', 'GET'])
 def signup():
+    form = RegisterForm()
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     else:
-        form = RegisterForm()
         if form.validate_on_submit():
             new_user = User(request.form['username'], request.form['password'], request.form['email'])
             if User.query.filter_by(email = new_user.email).first():
@@ -46,7 +46,6 @@ def signup():
             send_email(new_user.email, 'Potwierdź swoje konto', html)
             flash("Konto zostało utworzone. Potwierdź je klikają w link aktywacyjny wysłany na podany adres email")
             return redirect(url_for('signup'))
-
         return render_template(add + 'signup.html', form = form, title = 'Rejestracja')
 
 
@@ -55,11 +54,11 @@ def signin():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     elif "resend_activation_email" in request.form:
-        user = User.query.filter_by(username = request.form['username']).first()
-        token = ts.dumps(user.email, salt = SALT_CONFIRM_EMAIL)
+        user = User.query.filter_by(username=request.form['username']).first()
+        token = ts.dumps(user.email, salt=SALT_CONFIRM_EMAIL)
 
-        confirm_url = url_for('confirm_email', token = token, _external = True)
-        html = render_template(add + 'email_new_email.html', confirm_url = confirm_url)
+        confirm_url = url_for('confirm_email', token=token, _external=True)
+        html = render_template(add + 'email_new_email.html', confirm_url=confirm_url)
         send_email(user.email, 'Potwierdź swój email', html)
         flash("Email aktywacyjny został wysłany ponownie")
         return redirect(url_for('signin'))
@@ -67,18 +66,18 @@ def signin():
         form = LoginForm()
         url_reset_password = url_for('reset_password')
         if form.validate_on_submit():
-            name = User.query.filter_by(username = str(request.form['username'])).first()
+            name = User.query.filter_by(username=str(request.form['username'])).first()
             if name.check_password(request.form['password']):
                 if not name.email_confirmed:
                     flash("Konto nie zostało aktywowane")
-                    return render_template(add + 'signin.html', form = form, url_reset_password = url_reset_password,
-                                           esend_activation_email = True)
+                    return render_template(add + 'signin.html', form=form, url_reset_password=url_reset_password,
+                                           resend_activation_email=True)
                 login_user(name)
                 return redirect(url_for('home'))
             else:
                 flash("Błędny login lub hasło")
-        return render_template(add + 'signin.html', form = form, url_reset_password = url_reset_password,
-                               resend_activation_email = False)
+        return render_template(add + 'signin.html', form=form, url_reset_password=url_reset_password,
+                               resend_activation_email=False)
 
 
 @app.route('/logout')
@@ -91,7 +90,7 @@ def logout():
 @app.route('/home')
 @login_required
 def home():
-    return render_template(add + 'home.html',username=current_user.username)
+    return render_template(add + 'home.html')
 
 
 @app.route('/account', methods = ['GET', 'POST'])
@@ -137,8 +136,7 @@ def account():
         flash("Email został zmieniony poprawnie. Link aktywacyjny został przesłany na twój nowy adres", "email")
         return redirect(url_for('account'))
 
-    return render_template(add + 'account.html', pass_form = pass_form, email_form = email_form,
-                           login = current_user.username, email = current_user.email)
+    return render_template(add + 'account.html', pass_form = pass_form, email_form = email_form,login = current_user.username, email = current_user.email)
 
 
 @app.route('/help', methods = ['POST', 'GET'])
@@ -166,15 +164,14 @@ def confirm_email(token):
     if user.email_confirmed:
         abort(404)
 
-    try:
-        user_dir = Directory(user.username,user.id,None)
-        user_dir.Hide()
-        db.session.add(user_dir)
-        db.session.commit()
-        dir_path = os.path.join(UPLOAD_FOLDER,user.username)
+    dir_path = os.path.join(UPLOAD_FOLDER, user.username)
+    main_dir = Directory(user.username,user.id,None)
+    main_dir.Hide()
+    if not os.path.exists(dir_path):
         os.mkdir(dir_path)
-    except:
-        abort(404)
+
+    db.session.add(main_dir)
+    db.session.commit()
 
     user.activate_user()
     db.session.add(user)
