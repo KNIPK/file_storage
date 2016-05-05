@@ -6,8 +6,10 @@ import os
 import posixpath
 import shutil
 from ..config import UPLOAD_FOLDER,EXT_DIC
-from ..models import File,User,Directory
+from ..models import File,User,Directory,Link
 from..forms.file_zone import DirForm
+from datetime import datetime,timedelta
+
 
 
 @lm.user_loader
@@ -166,6 +168,44 @@ def my_files(directory):
         file_list = actual_dir.files.all()
         return render_template('files_zone/files.html', dirs=dir_list, files=file_list,current_dir=actual_dir.name,back_dir=back_dir)
     return redirect('/home')
+
+@app.route('/generatelink/<fileid>')
+@login_required
+def generatelink(fileid):
+    f = File.query.filter_by(id=fileid).first_or_404()
+    link = Link(fileid)
+    db.session.add(link)
+    db.session.commit()
+    db.session.refresh(link)
+    return "<a href=/downloadlink/"+str(link.id)+">"+f.name+"</a>"
+
+def get_dir(file):
+    d=Directory.query.get(file.directory_id)
+    dirs = [d.name]
+
+    path = None
+    while(d.holder_id != None):
+        d=Directory.query.get(d.holder_id)
+        dirs.append(d.name)
+    path = os.path.join(*reversed(dirs))
+    return os.path.join("upload_storage",path)
+
+
+
+@app.route('/downloadlink/<linkid>')
+def downloadlink(linkid):
+    link = Link.query.filter_by(id=linkid).first_or_404()
+    current_ts = datetime.now()
+    if current_ts - link.last_access < timedelta(hours=24):
+        file = File.query.get(link.file_id)
+        link.last_access = datetime.now()
+        db.session.add(link)
+        db.session.commit()
+        dir_path=  get_dir(file)
+        full_path = os.path.join(dir_path,file.name)
+        return send_file(full_path,as_attachment=True)
+    else:
+        return "Uplynal czas"
 
 
 @app.route('/download/<directory>/<file>')
