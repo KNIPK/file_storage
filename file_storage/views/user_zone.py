@@ -2,7 +2,7 @@ from flask import render_template, url_for, request, redirect, flash, abort
 from flask_login import logout_user, login_user, login_required, current_user
 from file_storage import app, db, lm
 from ..forms.user_zone import RegisterForm, LoginForm, ChangeEmailForm, ChangePasswordForm, ResetPasswordForm
-from ..models import User,Directory
+from ..models import User,Directory,Member
 from ..util.utils import send_email
 from ..util.security import ts
 from ..config import MAIL_DEFAULT_SENDER, SALT_CONFIRM_EMAIL, SALT_RESET_PASSWORD, UPLOAD_FOLDER
@@ -31,10 +31,10 @@ def signup():
         if form.validate_on_submit():
             new_user = User(request.form['username'], request.form['password'], request.form['email'])
             if User.query.filter_by(email = new_user.email).first():
-                flash("Taki email już istnieje")
+                flash("Email already in use")
                 return redirect(url_for('signup'))
             if User.query.filter_by(username = new_user.username).first():
-                flash("Taka nazwa użytkownika już istnieje")
+                flash("Username already in use")
                 return redirect(url_for('signup'))
 
             db.session.add(new_user)
@@ -67,15 +67,16 @@ def signin():
         url_reset_password = url_for('reset_password')
         if form.validate_on_submit():
             name = User.query.filter_by(username=str(request.form['username'])).first()
-            if name.check_password(request.form['password']):
-                if not name.email_confirmed:
-                    flash("Konto nie zostało aktywowane")
-                    return render_template(add + 'signin.html', form=form, url_reset_password=url_reset_password,
-                                           resend_activation_email=True)
-                login_user(name)
-                return redirect(url_for('home'))
-            else:
+            if name:
+                if name.check_password(request.form['password']):
+                    if not name.email_confirmed:
+                        flash("Konto nie zostało aktywowane")
+                        return render_template(add + 'signin.html', form=form, url_reset_password=url_reset_password,
+                                               resend_activation_email=True)
+                    login_user(name)
+                    return redirect(url_for('home'))
                 flash("Błędny login lub hasło")
+            flash("Błędny login lub hasło")
         return render_template(add + 'signin.html', form=form, url_reset_password=url_reset_password,
                                resend_activation_email=False)
 
@@ -142,13 +143,17 @@ def account():
 @app.route('/help', methods = ['POST', 'GET'])
 def help():
     if request.method == 'POST':
-        email = request.form['help-email']
-        subject = request.form['help-subject']
-        description = request.form['help-description']
+        email = request.form['email']
+        subject = request.form['subject']
+        description = request.form['description']
         html = render_template(add + 'email_help.html', email = email, description = description)
-        send_email(MAIL_DEFAULT_SENDER, subject, html)
-        flash("Wiadomość została wysłana poprawnie")
+        try:
+            send_email(MAIL_DEFAULT_SENDER, subject, html)
+            flash("Message send !","success")
+        except:
+            flash("Unable to send the message !","error")
         return redirect(url_for('help'))
+
     return render_template(add + 'help.html')
 
 
@@ -167,14 +172,24 @@ def confirm_email(token):
     dir_path = os.path.join(UPLOAD_FOLDER, user.username)
     main_dir = Directory(user.username,user.id,None)
     main_dir.Hide()
-    if not os.path.exists(dir_path):
-        os.mkdir(dir_path)
 
     db.session.add(main_dir)
     db.session.commit()
 
+
+
+    wl = Member(main_dir.id,user.id) # cos jest nie tak; //
+    db.session.add(wl)
+
+    if not os.path.exists(dir_path):
+        os.mkdir(dir_path)
+
+
+
+
     user.activate_user()
     db.session.add(user)
+
     db.session.commit()
 
     return redirect(url_for('signin'))

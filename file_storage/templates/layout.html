@@ -4,6 +4,7 @@
 {% block head %}
 <link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='styles/file_index.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='styles/user_access.css') }}" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 <link href="{{ url_for('static', filename='dropzone/dropzone.css') }}" rel="stylesheet">
 <script type=text/javascript src="{{ url_for('static', filename='dropzone/dropzone.js') }}"></script>
@@ -22,9 +23,21 @@
 
     </div>
     <ul class="nav navbar-nav">
-     {% with username = give_current_username() %}
-      <li class="active"><a href="/files/{{ username }}">My Files</a></li>
+        {% with logged_in = current_user.is_authenticated %}
+            {% if not logged_in %}
+               <li> <a href="/signup" class="button">Register</a></li>
+                <li><a href="/signin" class="button">Login</a></li>
+        {% else%}
+               <li> <a href="/home" class="button">Home</a></li>
+                <li><a href="/account" class="button">Konto</a></li>
+                <li><a href="/logout" class="button">Wyloguj</a></li>
+                <li><a href="/help" class="button">Help</a></li>
+                {% with username = give_current_username() %}
+                <li><a href="/files/{{ username }}/{{ username}}">My Files</a></li>
+                {% endwith %}
+        {% endif %}
         {% endwith %}
+
     </ul>
   </div>
 </nav>

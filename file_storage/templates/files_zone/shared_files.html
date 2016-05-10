@@ -2,16 +2,17 @@
 
 {% block content %}
 <ul class="nav nav-tabs">
-  <li role="presentation" class="active"><a href="/home">Home</a></li>
+  <li role="presentation" ><a href="/home">Home</a></li>
     {% with username = give_current_username() %}
     <li role="presentation" ><a href="/files/{{ username }}/{{ username }}">My Files</a></li>
     {% endwith %}
-  <li role="presentation"><a href="/friends">Profile</a></li>
+  <li role="presentation" class="active"><a href="/friends">Profile</a></li>
 </ul>
 <br>
 <div>
-    <center><h1>Home Page</h1></center>
+    {% for user in friends %}
+    <a href="/files/{{user.username}}/{{user.username}}">{{user.username}}</a><br>
+    {% endfor %}
 
 </div>
-
 {% endblock %}

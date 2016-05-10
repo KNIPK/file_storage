@@ -1,27 +1,27 @@
-{% extends 'user_zone/layout.html' %}
+{% extends 'layout.html' %}
 
 {% block content %}
-
-<div id="loginspace" >
-    <form method="post" action="/signin" name="register">
+<div class="log_box">
+<div class="col-xs-5" style="border: 1px solid #ababab;border-radius: 5px 5px 5px 5px;">
+    <form method="post" action="/signin"  class="form-sigin">
         {{ form.hidden_tag() }}
-        <div id="loginbox1">
-            <p>
-                Login : <br>
-                Password : <br>
-            </p>
-        </div>
-        <div id="loginbox2">
-            <p>
-                {{ form.username(size=30) }}<br>
-                {{ form.password(size=30) }}<br><br>
-                 <input type='submit' value="Zaloguj" class="button">
-                <a href="{{ url_reset_password }}">Zapomniałem hasła</a>
-            </p>
-            {% with messages = form.username.errors + form.password.errors %}
+
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="inputLogin" class="sr-only">Login</label>
+        <input type="text" id="inputLogin" value="{{request.form.username }}" name="username" size="30" class="form-control" placeholder="Login"  required autofocus >
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" value="{{request.form.password }}" name="password" size="30" class="form-control" placeholder="Password"  required >
+        <br>
+        <input class="btn btn-lg btn-primary btn-block" size="30" type="submit" value="Sign in">
+        <br>
+        <label>
+            <a href="{{ url_reset_password }}">Forgot Password</a> | <a href="{{ url_for('help') }}">Can't Log In</a>
+          </label>
+
+        {% with messages = form.username.errors + form.password.errors %}
                 {% if messages %}
                     {% for message in messages %}
-                        <p>{{ message }}</p>
+                        <div class="alert alert-warning" role="alert">{{ message }}</div>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
@@ -29,19 +29,16 @@
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     {% for message in messages %}
-                        <p>{{ message }}</p>
+                        <div class="alert alert-warning" role="alert">{{ message }}</div>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
-
-            {% if resend_activation_email %}
+        {% if resend_activation_email %}
                 <form method="post" action="" name="resend_activation_email">
                     <input type="submit" value="Wyślij jeszcze raz email aktywacyjny" name="resend_activation_email">
                 </form>
             {% endif %}
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
-
-
 {% endblock %}

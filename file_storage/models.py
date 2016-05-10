@@ -40,6 +40,19 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+class Member(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    directory = db.Column(db.Integer, db.ForeignKey('directory.id'))
+    member_id = db.Column(db.Integer,index=True)
+
+    def __init__(self,directory_id,member_id):
+        self.directory = directory_id
+        self.member_id = member_id
+
+    def __str__(self):
+        return "|ID:: " + str(self.id) + " |Member of: " + str(self.directory) + " |User ID: " + str(self.member_id)
+
+
 class Directory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=False, index=True)
@@ -48,6 +61,7 @@ class Directory(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     holder_id = db.Column(db.Integer,index=True)
     hidden = db.Column(db.Boolean,default = False)
+    white_list = db.relationship("Member",backref='occupier',lazy='dynamic')
     files = db.relationship("File",backref='holder',lazy='dynamic')
 
     def __init__(self,name,owner_id,holder_id):
@@ -55,7 +69,6 @@ class Directory(db.Model):
         self.access = True
         self.holder_id = holder_id
         self.owner_id = owner_id
-        self.white_list = []
         self.password = None
         self.hidden = False
 
@@ -71,13 +84,16 @@ class Directory(db.Model):
     def deny(self, password):
         self.access = False
         self.password = bcrypt.generate_password_hash(password)
-        self.white_list.append(self.owner_id)
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
 
-    def allow_for_user(self, user):
-        self.white_list.append(user)
+    # def allow_for_user(self, user_id):
+    #     self.white_list.append(user_id)
+    #
+    # def check_for_access(self,user_id):
+    #     if user_id in self.white_list:
+    #         return True
 
     def deny_for_user(self, user):
         pass

@@ -11,12 +11,13 @@ PASS_MIN_L = 6
 PASS_MAX_L = 16
 PASS_LENGHT_MESSAGE = "Hasło powinno zawierać od %s do %s znaków" % (str(PASS_MIN_L), str(PASS_MAX_L))
 
+PASS_CONFIRM_MESSAGE = "The retyped password does not match your password"
+
 
 class RegisterForm(Form):
     username = StringField('name', validators = [Length(USER_MIN_L, USER_MAX_L, USER_LENGHT_MESSAGE)])
     password = PasswordField('pass', validators = [Length(PASS_MIN_L, PASS_MAX_L, PASS_LENGHT_MESSAGE)])
-    confirm = PasswordField('confirm',
-                            validators = [Length(PASS_MIN_L, PASS_MAX_L, PASS_LENGHT_MESSAGE), EqualTo('password')])
+    confirm = PasswordField('confirm',validators = [EqualTo('password',PASS_CONFIRM_MESSAGE)])
     email = EmailField('mail', validators = [DataRequired("Puste pole: email")])
 
 
