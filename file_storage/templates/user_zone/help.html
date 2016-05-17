@@ -3,45 +3,44 @@
 {% block content %}
 <div class="help_box">
     <div>
-<form action="" method="POST">
-    <fieldset class="form-group">
-      <div class="col-sm-8">
-    <label for="inputEmail3" >Email</label>
-      <input type="email" class="form-control" id="inputEmail3" placeholder="Email" name="email" required>
-    </div>
-  </fieldset>
-    <fieldset class="form-group">
-     <div class="col-sm-8">
-    <label for="inputSubject">Subject</label>
-      <input type="text" class="form-control" id="inputSubject" placeholder="Subject" name="subject" required>
-    </div>
-  </fieldset>
-    <fieldset class="form-group">
-        <div class="col-sm-8">
-        <label for="inputProblem">Problem</label>
-                <textarea class="form-control" id="inputProblem" rows="5" maxlength="2000" name="description" required></textarea>
-            </div>
-    </fieldset>
-    <fieldset class="form-group">
-    <div class="col-sm-2">
-      <button type="submit" class="btn btn-secondary">Send</button>
-    </div>
-  </fieldset>
-    {% with messages = get_flashed_messages(with_categories=true) %}
+        <form action="" method="POST">
+            <fieldset class="form-group">
+                <div class="col-sm-8">
+                  <label for="inputEmail3" >Email</label>
+                  <input type="email" class="form-control" id="inputEmail3" placeholder="Email" name="email" required>
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <div class="col-sm-8">
+                    <label for="inputSubject">Subject</label>
+                    <input type="text" class="form-control" id="inputSubject" placeholder="Subject" name="subject" required>
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <div class="col-sm-8">
+                    <label for="inputProblem">Problem</label>
+                    <textarea class="form-control" id="inputProblem" rows="5" maxlength="2000" name="description" required></textarea>
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-secondary">Send</button>
+                </div>
+            </fieldset>
+            {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     <div class="col-sm-8">
-                    {% for category,message in messages %}
-                        {% if category == "error" %}
-
-                        <div class="alert alert-danger" role="alert">{{ message }}</div>
-                        {% elif category == "success"  %}
-                        <div class="alert alert-success" role="alert">{{ message }}</div>
-                        {% endif %}
-                    {% endfor %}
-                        </div>
+                        {% for category,message in messages %}
+                            {% if category == "error" %}
+                                <div class="alert alert-danger" role="alert">{{ message }}</div>
+                                    {% elif category == "success"  %}
+                                <div class="alert alert-success" role="alert">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 {% endif %}
             {% endwith %}
-</form>
-        </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

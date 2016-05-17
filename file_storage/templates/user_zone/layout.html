@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     {% if title %}
-    <title>{{ title }}</title>
+        <title>{{ title }}</title>
     {% else %}
-    <title>Projekt 1</title>
+        <title>Projekt 1</title>
     {% endif %}
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}" type="text/css">
 </head>
@@ -16,16 +16,15 @@
             {% if not logged_in %}
                 <a href="/signup" class="button">Register</a>
                 <a href="/signin" class="button">Login</a>
-        {% else%}
+            {% else%}
                 <a href="/home" class="button">Home</a>
                 <a href="/account" class="button">Konto</a>
                 <a href="/logout" class="button">Wyloguj</a>
-        {% endif %}
-
-        <a href="/help" class="button">Help</a>
+            {% endif %}
+            <a href="/help" class="button">Help</a>
         {% endwith %}
     </div>
-     <hr class="style1"><br>
+    <hr class="style1"><br>
     {% block content %}
     {% endblock %}
     <br>

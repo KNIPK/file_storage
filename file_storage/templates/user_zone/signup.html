@@ -2,29 +2,27 @@
 
 {% block content %}
 <div class="log_box">
-<div class="col-xs-5" style="border: 1px solid #ababab;border-radius: 5px 5px 5px 5px;">
-    <form method="post" action="/signup"  class="form-sigin">
-        {{ form.hidden_tag() }}
+    <div class="col-xs-5" style="border: 1px solid #ababab;border-radius: 5px 5px 5px 5px;">
+        <form method="post" action="/signup"  class="form-sigin">
+            {{ form.hidden_tag() }}
 
-        <h2 class="form-signin-heading">Join Us</h2>
-        <label for="inputLogin" class="sr-only">Login</label>
-        <input type="text" id="inputLogin" value="{{request.form.username }}" name="username" size="30" class="form-control" placeholder="Login"  required autofocus >
+            <h2 class="form-signin-heading">Join Us</h2>
+            <label for="inputLogin" class="sr-only">Login</label>
+            <input type="text" id="inputLogin" value="{{request.form.username }}" name="username" size="30" class="form-control" placeholder="Login"  required autofocus >
 
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" value="{{request.form.password }}" name="password" size="30" class="form-control" placeholder="Password"  required >
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" value="{{request.form.password }}" name="password" size="30" class="form-control" placeholder="Password"  required >
 
-        <label for="inputConfirm" class="sr-only">Confirm Password</label>
-        <input type="password" id="inputConfirm" value="{{request.form.confirm }}" name="confirm" size="30" class="form-control" placeholder="Confirm Passoword"  required >
+            <label for="inputConfirm" class="sr-only">Confirm Password</label>
+            <input type="password" id="inputConfirm" value="{{request.form.confirm }}" name="confirm" size="30" class="form-control" placeholder="Confirm Passoword"  required >
 
-        <label for="inputEmail" class="sr-only">Email</label>
-        <input type="email" id="inputEmail" value="{{request.form.email }}" name="email" size="30" class="form-control" placeholder="Email"  required >
-        <br>
-        <input class="btn btn-lg btn-primary btn-block" size="30" type="submit" value="Sign up">
-        <br>
-        <label>
+            <label for="inputEmail" class="sr-only">Email</label>
+            <input type="email" id="inputEmail" value="{{request.form.email }}" name="email" size="30" class="form-control" placeholder="Email"  required >
+            <br>
+            <input class="btn btn-lg btn-primary btn-block" size="30" type="submit" value="Sign up">
+            <br>
 
-          </label>
-        {% with messages = form.username.errors + form.password.errors + form.confirm.errors%}
+            {% with messages = form.username.errors + form.password.errors + form.confirm.errors%}
                 {% if messages %}
                     {% for message in messages %}
                         <div class="alert alert-warning" role="alert">{{ message }}</div>
@@ -39,7 +37,6 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
-
         </form>
     </div>
 </div>

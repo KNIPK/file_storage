@@ -27,14 +27,14 @@ class LoginForm(Form):
 
 
 class ChangeEmailForm(Form):
-    email = EmailField('newEmail', validators = [DataRequired("Puste pole: email")])
-    password = PasswordField('pass', validators = [Length(PASS_MIN_L, PASS_MAX_L, PASS_LENGHT_MESSAGE)])
+    email = EmailField('Nowy email', validators = [DataRequired("Puste pole: email")])
+    password = PasswordField('Hasło', validators = [Length(PASS_MIN_L, PASS_MAX_L, PASS_LENGHT_MESSAGE)])
 
 
 class ChangePasswordForm(Form):
-    old_password = PasswordField('old_pass', validators = [Length(PASS_MIN_L, PASS_MAX_L, PASS_LENGHT_MESSAGE)])
-    password = PasswordField('pass', validators = [Length(PASS_MIN_L, PASS_MAX_L, PASS_LENGHT_MESSAGE)])
-    confirm = PasswordField('confirm',
+    old_password = PasswordField('Stare hasło', validators = [Length(PASS_MIN_L, PASS_MAX_L, PASS_LENGHT_MESSAGE)])
+    password = PasswordField('Nowe hasło', validators = [Length(PASS_MIN_L, PASS_MAX_L, PASS_LENGHT_MESSAGE)])
+    confirm = PasswordField('Potwierdź',
                             validators = [Length(PASS_MIN_L, PASS_MAX_L, PASS_LENGHT_MESSAGE), EqualTo('password')])
 
 

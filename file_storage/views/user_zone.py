@@ -2,7 +2,7 @@ from flask import render_template, url_for, request, redirect, flash, abort
 from flask_login import logout_user, login_user, login_required, current_user
 from file_storage import app, db, lm
 from ..forms.user_zone import RegisterForm, LoginForm, ChangeEmailForm, ChangePasswordForm, ResetPasswordForm
-from ..models import User,Directory,Member
+from ..models import User, Directory, Member
 from ..util.utils import send_email
 from ..util.security import ts
 from ..config import MAIL_DEFAULT_SENDER, SALT_CONFIRM_EMAIL, SALT_RESET_PASSWORD, UPLOAD_FOLDER
@@ -54,11 +54,11 @@ def signin():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     elif "resend_activation_email" in request.form:
-        user = User.query.filter_by(username=request.form['username']).first()
-        token = ts.dumps(user.email, salt=SALT_CONFIRM_EMAIL)
+        user = User.query.filter_by(username = request.form['username']).first()
+        token = ts.dumps(user.email, salt = SALT_CONFIRM_EMAIL)
 
-        confirm_url = url_for('confirm_email', token=token, _external=True)
-        html = render_template(add + 'email_new_email.html', confirm_url=confirm_url)
+        confirm_url = url_for('confirm_email', token = token, _external = True)
+        html = render_template(add + 'email_new_email.html', confirm_url = confirm_url)
         send_email(user.email, 'Potwierdź swój email', html)
         flash("Email aktywacyjny został wysłany ponownie")
         return redirect(url_for('signin'))
@@ -66,19 +66,19 @@ def signin():
         form = LoginForm()
         url_reset_password = url_for('reset_password')
         if form.validate_on_submit():
-            name = User.query.filter_by(username=str(request.form['username'])).first()
+            name = User.query.filter_by(username = str(request.form['username'])).first()
             if name:
                 if name.check_password(request.form['password']):
                     if not name.email_confirmed:
                         flash("Konto nie zostało aktywowane")
-                        return render_template(add + 'signin.html', form=form, url_reset_password=url_reset_password,
-                                               resend_activation_email=True)
+                        return render_template(add + 'signin.html', form = form,
+                                               url_reset_password = url_reset_password, resend_activation_email = True)
                     login_user(name)
                     return redirect(url_for('home'))
                 flash("Błędny login lub hasło")
             flash("Błędny login lub hasło")
-        return render_template(add + 'signin.html', form=form, url_reset_password=url_reset_password,
-                               resend_activation_email=False)
+        return render_template(add + 'signin.html', form = form, url_reset_password = url_reset_password,
+                               resend_activation_email = False)
 
 
 @app.route('/logout')
@@ -91,7 +91,7 @@ def logout():
 @app.route('/home')
 @login_required
 def home():
-    return render_template(add + 'home.html',username=current_user.username)
+    return render_template(add + 'home.html', username = current_user.username)
 
 
 @app.route('/account', methods = ['GET', 'POST'])
@@ -137,7 +137,8 @@ def account():
         flash("Email został zmieniony poprawnie. Link aktywacyjny został przesłany na twój nowy adres", "email")
         return redirect(url_for('account'))
 
-    return render_template(add + 'account.html', pass_form = pass_form, email_form = email_form,login = current_user.username, email = current_user.email)
+    return render_template(add + 'account.html', pass_form = pass_form, email_form = email_form,
+                           login = current_user.username, email = current_user.email)
 
 
 @app.route('/help', methods = ['POST', 'GET'])
@@ -149,9 +150,9 @@ def help():
         html = render_template(add + 'email_help.html', email = email, description = description)
         try:
             send_email(MAIL_DEFAULT_SENDER, subject, html)
-            flash("Message send !","success")
+            flash("Message send !", "success")
         except:
-            flash("Unable to send the message !","error")
+            flash("Unable to send the message !", "error")
         return redirect(url_for('help'))
 
     return render_template(add + 'help.html')
@@ -170,22 +171,17 @@ def confirm_email(token):
         abort(404)
 
     dir_path = os.path.join(UPLOAD_FOLDER, user.username)
-    main_dir = Directory(user.username,user.id,None)
+    main_dir = Directory(user.username, user.id, None)
     main_dir.Hide()
 
     db.session.add(main_dir)
     db.session.commit()
 
-
-
-    wl = Member(main_dir.id,user.id) # cos jest nie tak; //
+    wl = Member(main_dir.id, user.id)  # cos jest nie tak; //
     db.session.add(wl)
 
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
-
-
-
 
     user.activate_user()
     db.session.add(user)

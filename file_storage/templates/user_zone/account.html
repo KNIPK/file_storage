@@ -1,66 +1,79 @@
-{% extends 'user_zone/layout.html' %}
+{% extends 'layout.html' %}
 
 {% block content %}
-<div id="startpage">
-<p>Obecnie jesteś zalogowany jako {{ login }}, email: {{ email }}</p>
-    <div style="float: left;">
-        <p>
-            Stare hasło<br>
-            Nowe hasło <br>
-            Potwierdź hasło <br>
-        </p>
+<div>
+    <div style="text-align: center;">
+        <p>Obecnie jesteś zalogowany jako <b>{{ login }}</b>, email: <b>{{ email }}</b></p>
     </div>
-    <form method="POST" action="" name="changePassword" style="padding: 10px; float: left;">
-        {{ pass_form.hidden_tag() }}
-        {{ pass_form.old_password }} <br>
-        {{ pass_form.password }} <br>
-        {{ pass_form.confirm }} <br>
-        <input type="submit" name="submit_pass" value="Zmień hasło">
-    </form>
-    <div style="float: left; padding: 10px;">
-        {% with messages = pass_form.old_password.errors + pass_form.password.errors + pass_form.confirm.errors %}
-            {% if messages %}
-                {{ messages[0] }}
-            {% endif %}
-        {% endwith %}
+    <div style="float: left; padding: 20px; width: 30%;">
+        <h3 style="text-align: center;">Zmień hasło</h3>
+        <form action="" method="POST">
+            {{ pass_form.hidden_tag() }}
+            <div>
+                {{ pass_form.old_password.label }}
+                {{ pass_form.old_password(class="form-control") }}
+            </div>
+            <div>
+                {{ pass_form.password.label }}
+                {{ pass_form.password(class="form-control") }}
+            </div>
+            <div>
+                {{ pass_form.confirm.label }}
+                {{ pass_form.confirm(class="form-control") }}
+            </div>
+            <div style="padding-top: 10px; text-align: center;">
+                <button type="submit" name="submit_pass" class="btn btn-secondary">Send</button>
+            </div>
+        </form>
+        <div style="padding: 10px;">
+            {% with messages = pass_form.old_password.errors + pass_form.password.errors + pass_form.confirm.errors %}
+                {% if messages %}
+                    {{ messages[0] }}
+                {% endif %}
+            {% endwith %}
 
-        {% with messages = get_flashed_messages(category_filter = ['password']) %}
-            {% if messages %}
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+            {% with messages = get_flashed_messages(category_filter = ['password']) %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
     </div>
-    <div style="clear: both;"></div>
-    <div style="float: left;">
-        <p>
-            Nowy email<br>
-            Hasło<br>
-        </p>
-    </div>
-    <form method="POST" action="" name="changeEmail" style="padding: 10px; float: left;">
-        {{ pass_form.hidden_tag() }}
-        {{ email_form.email }} <br>
-        {{ email_form.password }} <br>
-        <input type="submit" name="submit_email" value="Zmień email">
-    </form>
-    <div style="float: left; padding: 10px;">
-        {% with messages = email_form.email.errors + email_form.password.errors %}
-            {% if messages %}
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <div style="float: left; padding: 20px; width: 30%;">
+        <h3 style="text-align: center;">Zmień email</h3>
+        <form action="" method="POST">
+            {{ pass_form.hidden_tag() }}
+            <div>
+                {{ email_form.email.label }}
+                {{ email_form.email(class="form-control") }}
+            </div>
+            <div>
+                {{ email_form.password.label }}
+                {{ email_form.password(class="form-control") }}
+            </div>
+            <div style="padding-top: 10px; text-align: center;">
+                <button type="submit" name="submit_email" class="btn btn-secondary">Send</button>
+            </div>
+        </form>
+        <div style="padding: 10px;">
+            {% with messages = email_form.email.errors + email_form.password.errors %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-        {% with messages = get_flashed_messages(category_filter = ['email']) %}
-            {% if messages %}
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            {% endif %}
+            {% with messages = get_flashed_messages(category_filter = ['email']) %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
         {% endwith %}
+        </div>
     </div>
 </div>
 {% endblock %}

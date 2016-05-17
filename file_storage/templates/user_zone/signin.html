@@ -16,28 +16,28 @@
         <br>
         <label>
             <a href="{{ url_reset_password }}">Forgot Password</a> | <a href="{{ url_for('help') }}">Can't Log In</a>
-          </label>
+        </label>
 
         {% with messages = form.username.errors + form.password.errors %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-warning" role="alert">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-warning" role="alert">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-        {% if resend_activation_email %}
-                <form method="post" action="" name="resend_activation_email">
-                    <input type="submit" value="Wyślij jeszcze raz email aktywacyjny" name="resend_activation_email">
-                </form>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning" role="alert">{{ message }}</div>
+                {% endfor %}
             {% endif %}
+        {% endwith %}
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% if resend_activation_email %}
+            <form method="post" action="" name="resend_activation_email">
+                <input type="submit" value="Wyślij jeszcze raz email aktywacyjny" name="resend_activation_email">
+            </form>
+        {% endif %}
         </form>
     </div>
 </div>
