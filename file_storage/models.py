@@ -1,4 +1,5 @@
 from file_storage import db, bcrypt
+from datetime import datetime
 
 
 class User(db.Model):
@@ -142,3 +143,13 @@ class File(db.Model):
 
     def allow_for_all(self):
         self.access = True
+
+
+class Link(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    file_id = db.Column(db.Integer, db.ForeignKey('file.id'))
+    last_access = db.Column(db.TIMESTAMP)
+
+    def __init__(self, file_id):
+        self.file_id=file_id
+        self.last_access=datetime.now()
